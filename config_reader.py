@@ -15,6 +15,9 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: SecretStr
 
+    KAFKA_BROKER_URL: str
+    KAFKA_TOPIC: str
+
     SQLALCHEMY_ECHO_FLAG: bool = False
 
 

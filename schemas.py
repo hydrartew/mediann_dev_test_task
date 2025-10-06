@@ -1,10 +1,10 @@
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class ApplicationCreate(BaseModel):
-    user_name: str = Field(..., description="Имя пользователя")
-    description: str = Field(..., description="Описание заявки")
+    user_name: str
+    description: str
 
 
 class Application(BaseModel):
