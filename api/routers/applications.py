@@ -34,6 +34,7 @@ async def create_application_endpoint(application_data: ApplicationCreate):
         logger.error(f"Error creating application: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Failed to create application")
 
+
 @router.get("/applications", response_model=List[Application])
 async def get_applications(
     user_name: Optional[str] = Query(None, description="Фильтр по имени пользователя"),
@@ -65,9 +66,9 @@ async def get_applications(
             for app in db_applications
         ]
         
-        logger.info(f"Retrieved {len(applications)} applications")
+        logger.info(f"Get {len(applications)} applications")
         return applications
         
     except Exception as e:
-        logger.error(f"Error retrieving applications: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail="Failed to retrieve applications")
+        logger.error(f"Error getting applications: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Failed to get applications")

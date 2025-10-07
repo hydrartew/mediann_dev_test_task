@@ -4,7 +4,6 @@ import uvicorn
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 
 from db.cruds import create_db_tables_if_not_exists
 from kafka_app.publishers import faststream_app
@@ -53,7 +52,6 @@ async def main():
     config = uvicorn.Config(
         app=app,
         host="0.0.0.0",
-        port=8000,
         reload=True,
         log_level="info"
     )

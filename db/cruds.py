@@ -27,6 +27,8 @@ async def create_db_tables_if_not_exists(drop_all: bool = False) -> None:
 
 
 async def create_application(data: ApplicationCreate) -> ApplicationTable:
+    logger.info(f'Creating application with data: {repr(data)}')
+
     try:
         async with async_session_factory() as session:
             application = ApplicationTable(
@@ -34,41 +36,40 @@ async def create_application(data: ApplicationCreate) -> ApplicationTable:
                 description=data.description
             )
             session.add(application)
+
             await session.commit()
             await session.refresh(application)
+
             logger.info(f'Application created successfully with ID: {application.id}')
+
             return application
+
     except Exception as e:
         logger.error(f'Error creating application: {e}', exc_info=True)
         raise
 
 
-async def get_application_by_id(application_id: int) -> ApplicationTable | None:
-    try:
-        async with async_session_factory() as session:
-            stmt = select(ApplicationTable).where(ApplicationTable.id == application_id)
-            result = await session.execute(stmt)
-            application = result.scalar_one_or_none()
-            return application
-    except Exception as e:
-        logger.error(f'Error getting application by ID {application_id}: {e}', exc_info=True)
-        raise
-
-
 async def get_all_applications(limit: int = 100, offset: int = 0) -> list[ApplicationTable]:
+    logger.info('Try to get all applications')
+
     try:
         async with async_session_factory() as session:
             stmt = select(ApplicationTable).offset(offset).limit(limit).order_by(ApplicationTable.created_at.desc())
             result = await session.execute(stmt)
             applications = result.scalars().all()
+
             logger.info(f'Retrieved {len(applications)} applications')
+
             return list(applications)
+
     except Exception as e:
         logger.error(f'Error getting applications: {e}', exc_info=True)
         raise
 
 
 async def get_applications_by_user_name(user_name: str, limit: int = 100, offset: int = 0) -> list[ApplicationTable]:
+    logger.info(f'Try to get applications by user_name:{user_name}, limit:{limit}, offset:{offset}')
+
     try:
         async with async_session_factory() as session:
             stmt = (
@@ -80,8 +81,11 @@ async def get_applications_by_user_name(user_name: str, limit: int = 100, offset
             )
             result = await session.execute(stmt)
             applications = result.scalars().all()
+
             logger.info(f'Retrieved {len(applications)} applications for user {user_name}')
+
             return list(applications)
+
     except Exception as e:
         logger.error(f'Error getting applications by user name {user_name}: {e}', exc_info=True)
         raise
