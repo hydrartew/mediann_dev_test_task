@@ -1,5 +1,5 @@
 *.json
-.log
+*.log
 .idea
 .venv
 __pycache__
