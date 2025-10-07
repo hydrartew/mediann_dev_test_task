@@ -2,9 +2,8 @@ import logging
 from typing import List, Optional
 
 from fastapi import APIRouter, HTTPException, Query
-from faststream.kafka import KafkaBroker
+from kafka_app import publish_application
 
-from config_reader import settings
 from schemas import Application, ApplicationCreate
 
 from db.cruds import create_application, get_applications_by_user_name, get_all_applications
@@ -12,14 +11,6 @@ from db.cruds import create_application, get_applications_by_user_name, get_all_
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
-
-broker = KafkaBroker(settings.KAFKA_BROKER_URL)
-
-
-@broker.publisher(topic=settings.KAFKA_TOPIC)
-async def publish_application(application: Application):
-    logger.info(f"Publishing application to Kafka: {application.model_dump_json()}")
-    return application.model_dump_json().encode("utf-8")
 
 
 @router.post("/applications", response_model=Application)
