@@ -25,6 +25,7 @@ async def _ensure_kafka_topic_once() -> None:
     global _topic_ready
     if _topic_ready:
         return
+    logger.info(f"Kafka broker URL: {settings.KAFKA_BROKER_URL}")
     admin = AIOKafkaAdminClient(bootstrap_servers=settings.KAFKA_BROKER_URL)
     try:
         await admin.start()
@@ -54,6 +55,7 @@ async def _get_or_create_producer(start_if_needed: bool = True) -> Optional[AIOK
         return _producer
     if not start_if_needed:
         return None
+    logger.info(f"Kafka broker URL: {settings.KAFKA_BROKER_URL}")
     producer = AIOKafkaProducer(bootstrap_servers=settings.KAFKA_BROKER_URL)
     await producer.start()
     _producer = producer
